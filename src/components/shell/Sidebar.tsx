@@ -23,6 +23,8 @@ export function Sidebar({ open, onClose }: SidebarProps) {
     if (item.countKey === "flagged") return liveCounts.flagged ?? MOCK_COUNTS.flagged;
     if (item.countKey === "scheduled")
       return liveCounts.scheduled ?? MOCK_COUNTS.scheduled;
+    if (item.countKey === "comments")
+      return liveCounts.comments ?? MOCK_COUNTS.comments;
     return MOCK_COUNTS[item.countKey];
   };
 
@@ -38,6 +40,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
         aria-hidden="true"
       />
       <aside
+        data-print="hide"
         className={cn(
           "z-40 bg-paper-2 border-r-[1.5px] border-ink",
           "flex flex-col gap-0.5 p-3 pt-4",
@@ -71,11 +74,13 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                   key={item.key}
                   href={item.href}
                   onClick={onClose}
+                  aria-current={isActive ? "page" : undefined}
                   className={cn(
                     "relative flex items-center gap-2.5 px-2.5 py-2 rounded-[4px]",
                     "font-hand text-[13.5px] text-ink cursor-pointer",
                     "transition-[background,color,padding] duration-[180ms]",
                     "hover:bg-ink/5 hover:pl-3.5",
+                    "focus:outline-none focus:ring-2 focus:ring-accent/40",
                     isActive && "bg-ink text-paper hover:bg-ink hover:pl-3.5",
                   )}
                 >

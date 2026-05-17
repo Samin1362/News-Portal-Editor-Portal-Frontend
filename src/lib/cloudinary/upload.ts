@@ -1,12 +1,10 @@
 /**
- * Browser → Cloudinary unsigned upload. Backend has no Cloudinary creds —
- * the frontend uploads directly with the unsigned preset, then registers
- * the resulting metadata via POST /api/v1/media (only the journalist + admin
- * portals use that endpoint; the editor portal only needs uploads for the
- * own-profile photo flow in /settings).
+ * Browser → Cloudinary unsigned upload. The backend has no Cloudinary creds —
+ * the frontend uploads directly with the unsigned preset, then registers the
+ * resulting metadata via POST /api/v1/media.
  */
 
-export type MediaType = "image" | "video" | "audio";
+import type { MediaType } from "@/lib/types/media";
 
 const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ?? "";
 const PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UNSIGNED_PRESET ?? "";

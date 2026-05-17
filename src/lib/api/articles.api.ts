@@ -5,6 +5,7 @@ import type {
   ArticleFullDTO,
   ArticleMediaItem,
   ArticleSeo,
+  ArticleStatus,
   ArticleVideoItem,
   QueueStatus,
 } from "@/lib/types/article";
@@ -181,4 +182,84 @@ export async function setCommentsEnabled(
     { method: "PATCH", body: { isCommentsEnabled }, cache: "no-store" },
   );
   return data;
+}
+
+// ----- Editor-as-author surfaces (Phase 7: /drafts, /drafts/new, etc.) -----
+
+export interface CreateArticleBody {
+  headline: string;
+  summary: string;
+  content: string;
+  categoryId: string;
+  tags?: string[];
+  featuredImage?: ArticleMediaItem | null;
+  gallery?: ArticleMediaItem[];
+  videos?: ArticleVideoItem[];
+  seo?: Partial<ArticleSeo>;
+  isCommentsEnabled?: boolean;
+}
+
+export interface ListMineQuery {
+  status?: ArticleStatus;
+  page?: number;
+  limit?: number;
+}
+
+function mineQs(q: ListMineQuery): string {
+  const parts: string[] = [];
+  if (q.status) parts.push(`status=${encodeURIComponent(q.status)}`);
+  if (q.page) parts.push(`page=${q.page}`);
+  if (q.limit) parts.push(`limit=${q.limit}`);
+  return parts.length > 0 ? `?${parts.join("&")}` : "";
+}
+
+/** GET /articles/me — the editor's own authored articles (draft, etc.). */
+export async function listMineArticles(
+  fetcher: AuthedFetch,
+  query: ListMineQuery = {},
+): Promise<ApiResult<ArticleCardDTO[]>> {
+  return fetcher<ArticleCardDTO[]>(`/api/v1/articles/me${mineQs(query)}`, {
+    cache: "no-store",
+  });
+}
+
+/** POST /articles — create a draft authored by the current user. */
+export async function createArticle(
+  fetcher: AuthedFetch,
+  body: CreateArticleBody,
+): Promise<ArticleFullDTO> {
+  const { data } = await fetcher<ArticleFullDTO>("/api/v1/articles", {
+    method: "POST",
+    body,
+    cache: "no-store",
+  });
+  return data;
+}
+
+/** POST /articles/:id/submit — moves draft → submitted. */
+export async function submitArticle(
+  fetcher: AuthedFetch,
+  id: string,
+  note?: string,
+): Promise<ArticleFullDTO> {
+  const { data } = await fetcher<ArticleFullDTO>(
+    `/api/v1/articles/${encodeURIComponent(id)}/submit`,
+    {
+      method: "POST",
+      body: note ? { note } : undefined,
+      cache: "no-store",
+    },
+  );
+  return data;
+}
+
+/** DELETE /articles/:id — only owner (journalist|editor) + admin can delete. */
+export async function deleteArticle(
+  fetcher: AuthedFetch,
+  id: string,
+): Promise<void> {
+  await fetcher<unknown>(`/api/v1/articles/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+    cache: "no-store",
+  });
 }

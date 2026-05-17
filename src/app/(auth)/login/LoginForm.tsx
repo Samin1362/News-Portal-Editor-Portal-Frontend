@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/lib/auth/EditorAuthProvider";
 import { useRedirectIfSignedIn } from "@/lib/auth/useRequireEditor";
 import { authErrorMessage } from "@/lib/auth/errors";
@@ -12,7 +13,7 @@ export function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const redirectTo = params?.get("redirect") ?? "/";
-  const { signIn, signInWithGoogle } = useAuth();
+  const { signIn } = useAuth();
   // Send the user straight to the desk if they're already signed in as
   // editor/admin (e.g. they reopened a tab with a stale `/login` URL).
   useRedirectIfSignedIn(redirectTo);
@@ -20,6 +21,7 @@ export function LoginForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
@@ -29,18 +31,6 @@ export function LoginForm() {
       await signIn(email, password);
       // The role gate on `(editor)/layout.tsx` will bounce to /access-denied
       // if the signed-in profile isn't editor/admin.
-      router.replace(redirectTo);
-    } catch (err) {
-      toast.error(authErrorMessage(err));
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleGoogle = async () => {
-    setSubmitting(true);
-    try {
-      await signInWithGoogle();
       router.replace(redirectTo);
     } catch (err) {
       toast.error(authErrorMessage(err));
@@ -81,14 +71,30 @@ export function LoginForm() {
           <span className="font-hand text-[11px] uppercase tracking-[0.08em] text-muted">
             Password
           </span>
-          <input
-            type="password"
-            required
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="border-[1.5px] border-ink rounded-sm px-2.5 py-2 font-sans text-[14px] outline-none focus:border-accent"
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              required
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full border-[1.5px] border-ink rounded-sm pl-2.5 pr-10 py-2 font-sans text-[14px] outline-none focus:border-accent"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              aria-pressed={showPassword}
+              className="absolute inset-y-0 right-0 flex items-center justify-center w-9 text-muted hover:text-ink focus:outline-none focus:ring-2 focus:ring-accent/40 rounded-sm"
+              tabIndex={0}
+            >
+              {showPassword ? (
+                <EyeOff size={16} aria-hidden />
+              ) : (
+                <Eye size={16} aria-hidden />
+              )}
+            </button>
+          </div>
         </label>
         <Btn
           type="submit"
@@ -99,23 +105,6 @@ export function LoginForm() {
           {submitting ? "Signing in…" : "Sign in"}
         </Btn>
       </form>
-
-      <div className="flex items-center gap-2 my-1">
-        <div className="flex-1 h-px bg-ink/20" />
-        <span className="font-hand text-[10px] text-muted uppercase tracking-[0.08em]">
-          or
-        </span>
-        <div className="flex-1 h-px bg-ink/20" />
-      </div>
-
-      <Btn
-        type="button"
-        variant="default"
-        onClick={handleGoogle}
-        disabled={submitting}
-      >
-        Continue with Google
-      </Btn>
 
       <p className="font-hand text-[11px] text-muted">
         No editor invitation yet? Ask an admin to elevate your role from the

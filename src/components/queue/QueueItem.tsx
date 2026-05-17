@@ -55,7 +55,7 @@ export function QueueItem({
       data-id={article.id}
       onClick={onSelect}
       className={cn(
-        "queue-hov group flex gap-3 items-start",
+        "queue-hov group flex flex-wrap gap-3 items-start",
         "border-[1.5px] border-ink rounded-sm bg-paper p-3 pr-4",
         "transition-[transform,border,box-shadow] duration-[140ms]",
         "cursor-pointer",
@@ -110,9 +110,9 @@ export function QueueItem({
         </p>
       </div>
 
-      {/* Actions */}
+      {/* Actions — stack below body on narrow screens (<560px) per the mock. */}
       <div
-        className="flex items-center gap-1.5 shrink-0"
+        className="flex items-center gap-1.5 shrink-0 flex-wrap basis-full sm:basis-auto sm:flex-nowrap mt-1 sm:mt-0 justify-end"
         onClick={(e) => e.stopPropagation()}
       >
         <Btn
