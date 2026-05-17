@@ -25,10 +25,9 @@ function qs(q: ListUsersQuery): string {
 }
 
 /**
- * Lists users. Backend currently restricts `GET /users` to `admin` — for a
- * plain editor this call returns 403, which the queue treats as a non-fatal
- * "author names unavailable" state. Once a backend "editor-visible author
- * directory" endpoint exists this can be widened.
+ * Lists users. Backend allows editor + admin reads (Phase 5). If a future
+ * gate tightens to admin-only again, the wrapper still returns `null` on
+ * 401/403 so consumers degrade gracefully instead of hard-erroring.
  */
 export async function listUsers(
   fetcher: AuthedFetch,
@@ -38,6 +37,25 @@ export async function listUsers(
     return await fetcher<UserDTO[]>(`/api/v1/users${qs(query)}`, {
       cache: "no-store",
     });
+  } catch (err) {
+    if (err instanceof ApiError && (err.status === 403 || err.status === 401)) {
+      return null;
+    }
+    throw err;
+  }
+}
+
+/** Fetches a single user. Returns null on 401/403 (mirrors `listUsers`). */
+export async function getUser(
+  fetcher: AuthedFetch,
+  id: string,
+): Promise<UserDTO | null> {
+  try {
+    const { data } = await fetcher<UserDTO>(
+      `/api/v1/users/${encodeURIComponent(id)}`,
+      { cache: "no-store" },
+    );
+    return data;
   } catch (err) {
     if (err instanceof ApiError && (err.status === 403 || err.status === 401)) {
       return null;

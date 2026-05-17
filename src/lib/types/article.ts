@@ -29,7 +29,12 @@ export type ArticleStatus =
   | "rejected"
   | "archived";
 
-export type QueueStatus = "submitted" | "under_review";
+export type QueueStatus =
+  | "submitted"
+  | "under_review"
+  | "approved"
+  | "rejected"
+  | "published";
 
 export interface ArticleCardDTO {
   id: string;
