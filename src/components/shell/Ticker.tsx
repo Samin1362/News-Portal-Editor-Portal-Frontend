@@ -23,6 +23,7 @@ export function Ticker({ items }: TickerProps) {
   return (
     <div
       aria-hidden="true"
+      data-print="hide"
       className="flex gap-[18px] font-hand text-[12px] text-muted px-[22px] py-[6px] bg-paper-2 border-b border-ink/15 overflow-hidden whitespace-nowrap"
     >
       <div className="ticker-track">

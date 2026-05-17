@@ -14,11 +14,10 @@ import {
   onAuthStateChanged,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
-  signInWithPopup,
   signOut as fbSignOut,
   type User as FirebaseUser,
 } from "firebase/auth";
-import { getFirebaseAuth, googleProvider } from "@/lib/firebase/client";
+import { getFirebaseAuth } from "@/lib/firebase/client";
 import { syncMe } from "@/lib/api/auth.api";
 import { ApiError } from "@/lib/api/client";
 import type { UserProfile, UserRole } from "./types";
@@ -30,7 +29,6 @@ export interface AuthContextValue {
   loading: boolean;
   getIdToken: (forceRefresh?: boolean) => Promise<string | null>;
   signIn: (email: string, password: string) => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
   sendPasswordReset: (email: string) => Promise<void>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -105,10 +103,6 @@ export function EditorAuthProvider({ children }: { children: ReactNode }) {
     await signInWithEmailAndPassword(getFirebaseAuth(), email, password);
   }, []);
 
-  const signInWithGoogle = useCallback(async () => {
-    await signInWithPopup(getFirebaseAuth(), googleProvider);
-  }, []);
-
   const sendPasswordReset = useCallback(async (email: string) => {
     await sendPasswordResetEmail(getFirebaseAuth(), email);
   }, []);
@@ -132,7 +126,6 @@ export function EditorAuthProvider({ children }: { children: ReactNode }) {
       loading,
       getIdToken,
       signIn,
-      signInWithGoogle,
       sendPasswordReset,
       signOut,
       refreshProfile,
@@ -143,7 +136,6 @@ export function EditorAuthProvider({ children }: { children: ReactNode }) {
       loading,
       getIdToken,
       signIn,
-      signInWithGoogle,
       sendPasswordReset,
       signOut,
       refreshProfile,

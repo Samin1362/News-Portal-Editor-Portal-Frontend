@@ -15,6 +15,7 @@ export function BottomTabs() {
 
   return (
     <nav
+      data-print="hide"
       className="lg:hidden fixed inset-x-0 bottom-0 z-30 flex justify-around bg-paper border-t-[1.5px] border-ink"
       style={{ paddingBottom: "calc(6px + env(safe-area-inset-bottom))" }}
     >
@@ -29,8 +30,13 @@ export function BottomTabs() {
           <Link
             key={tab.key}
             href={tab.href}
+            aria-current={isActive ? "page" : undefined}
+            aria-label={
+              count > 0 ? `${tab.label} (${count} new)` : tab.label
+            }
             className={cn(
               "relative flex flex-col items-center gap-0.5 px-2 py-1.5 min-w-[44px] flex-1 rounded-[4px] font-hand text-[10px]",
+              "focus:outline-none focus:ring-2 focus:ring-accent/40",
               isActive ? "text-ink" : "text-muted",
             )}
           >

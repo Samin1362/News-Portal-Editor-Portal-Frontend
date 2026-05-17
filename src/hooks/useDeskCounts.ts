@@ -12,6 +12,8 @@ export interface DeskCounts {
   flagged: number | undefined;
   /** Approved articles awaiting their scheduled publish moment. */
   scheduled: number | undefined;
+  /** Pending (unmoderated) comments awaiting approve/reject. */
+  comments: number | undefined;
 }
 
 /**
@@ -62,9 +64,23 @@ export function useDeskCounts(): DeskCounts {
         : false,
   });
 
+  const commentsPending = useQuery({
+    queryKey: ["comments", "count", "pending"],
+    queryFn: async () => {
+      const result = await listAdminComments(fetcher, { status: "pending", limit: 1 });
+      return result.meta?.total ?? result.data.length;
+    },
+    staleTime: 30_000,
+    refetchInterval: () =>
+      typeof document !== "undefined" && document.visibilityState === "visible"
+        ? 60_000
+        : false,
+  });
+
   return {
     queue: queueTotal.data,
     flagged: flaggedTotal.data,
     scheduled: scheduledTotal.data,
+    comments: commentsPending.data,
   };
 }

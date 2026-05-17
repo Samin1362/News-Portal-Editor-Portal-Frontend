@@ -139,3 +139,14 @@ h1, h2, h3, h4, h5, h6, .serif {
   margin-right: 6px;
 }
 .live-dot.static::before { animation: none; }
+
+/* Phase 8 — Daily plan print styles. Anything in a layout chrome wrapper
+   tagged with `data-print="hide"` collapses to nothing during printing,
+   so the briefing prints clean on a single A4 sheet. */
+@media print {
+  [data-print="hide"] { display: none !important; }
+  body { background: white !important; }
+  .daily-plan-page { padding: 0 !important; }
+  .daily-plan-card { box-shadow: none !important; break-inside: avoid; }
+  a { color: black !important; text-decoration: none !important; }
+}

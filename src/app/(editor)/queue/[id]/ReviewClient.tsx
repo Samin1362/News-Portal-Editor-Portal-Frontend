@@ -33,6 +33,7 @@ import { StatusTimeline } from "@/components/review/StatusTimeline";
 import { RejectionDialog } from "@/components/review/RejectionDialog";
 import { ApproveDialog } from "@/components/review/ApproveDialog";
 import { ScheduleDialog } from "@/components/review/ScheduleDialog";
+import { DiffViewer } from "@/components/review/diff/DiffViewer";
 import type { ArticleFullDTO } from "@/lib/types/article";
 import type { FlagsPatch } from "@/lib/api/articles.api";
 import type { ApiError } from "@/lib/api/client";
@@ -388,14 +389,13 @@ export function ReviewClient({ id }: { id: string }) {
             <StatusTimeline history={article.history} />
           </Card>
 
-          {/* Diff stub */}
-          <Card className="border-dashed border-ink/30 bg-paper-2">
-            <p className="font-hand text-[11px] uppercase tracking-[0.08em] text-muted mb-1">
-              Diff vs. previous version
-            </p>
-            <p className="font-hand text-[12px] text-muted">
-              Side-by-side diff lands in Phase 9.
-            </p>
+          {/* Diff */}
+          <Card>
+            <DiffViewer
+              articleId={article.id}
+              currentContent={article.content}
+              draftContent={isEditing ? (draftHtml ?? article.content) : null}
+            />
           </Card>
         </aside>
       </div>

@@ -5,6 +5,7 @@ import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { Ticker, type TickerItem } from "./Ticker";
 import { BottomTabs } from "./BottomTabs";
+import { CommandPalette } from "@/components/palette/CommandPalette";
 
 interface EditorShellProps {
   children: ReactNode;
@@ -41,6 +42,7 @@ export function EditorShell({ children, ticker }: EditorShellProps) {
         </div>
       </main>
       <BottomTabs />
+      <CommandPalette />
     </div>
   );
 }

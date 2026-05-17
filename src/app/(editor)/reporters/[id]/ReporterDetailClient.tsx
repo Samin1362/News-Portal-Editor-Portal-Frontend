@@ -21,6 +21,7 @@ import { Avatar } from "@/components/primitives/Avatar";
 import { BarTrack } from "@/components/primitives/BarTrack";
 import { Btn } from "@/components/primitives/Btn";
 import { Pill } from "@/components/primitives/Pill";
+import { CommissionStoryDialog } from "@/components/commission/CommissionStoryDialog";
 import {
   reporterRoleLabel,
   statsFor,
@@ -40,7 +41,7 @@ interface Props {
 
 export function ReporterDetailClient({ id }: Props) {
   const fetcher = useAuthedApi();
-  const toast = useToast();
+  const [commissionOpen, setCommissionOpen] = useState(false);
 
   const target = useDeskTarget();
 
@@ -205,11 +206,7 @@ export function ReporterDetailClient({ id }: Props) {
           <Btn
             size="sm"
             variant="primary"
-            onClick={() =>
-              toast.info(
-                "Commission flow lands in Phase 8 — draft self + comment-tag the reporter for now.",
-              )
-            }
+            onClick={() => setCommissionOpen(true)}
           >
             <Sparkles size={12} /> Commission a story
           </Btn>
@@ -268,6 +265,12 @@ export function ReporterDetailClient({ id }: Props) {
           ))}
         </ColumnCard>
       </section>
+
+      <CommissionStoryDialog
+        open={commissionOpen}
+        onClose={() => setCommissionOpen(false)}
+        reporterId={id}
+      />
     </div>
   );
 }
