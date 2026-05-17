@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Deligo Editor Portal — design tokens.
+   Source: news-portal-deligo/project/dashboard.css.
+   Token names identical to admin_frontend/ + frontend/ so a
+   single design system spans all three apps.
+   ============================================================ */
+
+@theme {
+  --color-ink: #1a1a1a;
+  --color-paper: #ffffff;
+  --color-paper-2: #f4f4f3;
+  --color-canvas: #e7e2d6;
+  --color-muted: #8a8378;
+  --color-accent: #c8321b;
+  --color-accent-2: #2d6b3f;
+  --color-warn: #d6a52a;
+  --color-info: #2b6cb0;
+
+  --font-serif: var(--font-serif-google), "Times New Roman", serif;
+  --font-sans: var(--font-sans-google), system-ui, sans-serif;
+  --font-hand: var(--font-hand-google), "Patrick Hand", cursive;
+
+  --radius-sm: 3px;
+  --radius-md: 4px;
+}
+
+:root {
+  /* Density token — wired now, exposed as a user toggle in Phase 9. */
+  --pad: 14px;
+}
+
+[data-density="compact"] { --pad: 10px; }
+[data-density="comfy"]   { --pad: 18px; }
+
+html,
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6, .serif {
+  font-family: var(--font-serif);
+}
+
+.font-hand {
+  font-family: var(--font-hand);
+}
+
+/* ----- Animations transcribed from dashboard.css ----- */
+@keyframes livepulse {
+  0%, 100% { box-shadow: 0 0 0 0 currentColor; opacity: 1; }
+  50%      { box-shadow: 0 0 0 4px transparent; opacity: 0.7; }
+}
+@keyframes dashIn {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes tickerScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Staggered entry on the main content column. */
+.stagger > * {
+  opacity: 0;
+  animation: fadeUp 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+.stagger > *:nth-child(1) { animation-delay: 0.04s; }
+.stagger > *:nth-child(2) { animation-delay: 0.10s; }
+.stagger > *:nth-child(3) { animation-delay: 0.16s; }
+.stagger > *:nth-child(4) { animation-delay: 0.22s; }
+.stagger > *:nth-child(5) { animation-delay: 0.28s; }
+.stagger > *:nth-child(6) { animation-delay: 0.34s; }
+.stagger > *:nth-child(7) { animation-delay: 0.40s; }
+.stagger > *:nth-child(8) { animation-delay: 0.46s; }
+
+/* Ticker — infinite-scroll strip below the topbar. */
+.ticker-track {
+  display: inline-flex;
+  gap: 28px;
+  white-space: nowrap;
+  animation: tickerScroll 60s linear infinite;
+}
+
+/* "uline" — skewed editorial-red underline behind page H1. */
+.uline {
+  position: relative;
+  display: inline-block;
+}
+.uline::after {
+  content: "";
+  position: absolute;
+  inset: auto -2px -4px -2px;
+  height: 6px;
+  background: var(--color-accent);
+  opacity: 0.30;
+  border-radius: 4px;
+  transform: skewX(-8deg);
+}
+
+/* Card hover lift — the .hov modifier on KpiCard / Card. */
+.card-hov {
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.card-hov:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 4px 0 var(--color-ink);
+}
+
+/* Queue-item hover — the signature interaction of the editor desk. */
+.queue-hov {
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+.queue-hov:hover {
+  transform: translateX(2px);
+  box-shadow: -4px 0 0 var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+/* Pulsing dot used on .live pills + topbar bell. */
+.live-dot::before {
+  content: "";
+  display: inline-block;
+  width: 6px; height: 6px;
+  background: currentColor;
+  border-radius: 999px;
+  animation: livepulse 2s ease-in-out infinite;
+  margin-right: 6px;
+}
+.live-dot.static::before { animation: none; }
