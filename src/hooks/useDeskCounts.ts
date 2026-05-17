@@ -10,6 +10,8 @@ export interface DeskCounts {
   queue: number | undefined;
   /** Total reported (flagged) comments. */
   flagged: number | undefined;
+  /** Approved articles awaiting their scheduled publish moment. */
+  scheduled: number | undefined;
 }
 
 /**
@@ -47,8 +49,22 @@ export function useDeskCounts(): DeskCounts {
         : false,
   });
 
+  const scheduledTotal = useQuery({
+    queryKey: ["queue", "count", "approved"],
+    queryFn: async () => {
+      const result = await listQueue(fetcher, { status: "approved", limit: 1 });
+      return result.meta?.total ?? result.data.length;
+    },
+    staleTime: 30_000,
+    refetchInterval: () =>
+      typeof document !== "undefined" && document.visibilityState === "visible"
+        ? 60_000
+        : false,
+  });
+
   return {
     queue: queueTotal.data,
     flagged: flaggedTotal.data,
+    scheduled: scheduledTotal.data,
   };
 }

@@ -52,14 +52,14 @@ export function TodaySchedule({ scheduled }: Props) {
       ) : (
         <div className="border-[1.5px] border-dashed border-ink/30 rounded-sm bg-paper-2 px-3 py-3">
           <p className="font-hand text-[12px] text-ink">
-            No scheduled publishes loaded for today.
+            Nothing scheduled for today yet.
           </p>
           <p className="font-hand text-[11px] text-muted mt-1">
-            Schedule view fills in once the backend exposes
-            <code className="font-mono text-[11px] mx-1 px-1 py-px bg-paper rounded">
-              /articles?status=approved
-            </code>
-            (tracked in cross-cutting backend gaps).
+            Open the
+            <a href="/schedule" className="text-accent mx-1 hover:underline">
+              day planner
+            </a>
+            to drop an approved article on the timeline.
           </p>
         </div>
       )}

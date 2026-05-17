@@ -21,6 +21,8 @@ export function Sidebar({ open, onClose }: SidebarProps) {
     if (!item.countKey) return 0;
     if (item.countKey === "queue") return liveCounts.queue ?? MOCK_COUNTS.queue;
     if (item.countKey === "flagged") return liveCounts.flagged ?? MOCK_COUNTS.flagged;
+    if (item.countKey === "scheduled")
+      return liveCounts.scheduled ?? MOCK_COUNTS.scheduled;
     return MOCK_COUNTS[item.countKey];
   };
 

@@ -90,11 +90,11 @@ export function WeekStrip({ eventsByDate = {} }: Props) {
 
       {!hasAny ? (
         <p className="font-hand text-[11px] text-muted">
-          Week populates once
-          <code className="font-mono text-[11px] mx-1 px-1 py-px bg-paper-2 rounded">
-            /articles?status=approved
-          </code>
-          is exposed (admin Phase 5).
+          No scheduled or published events this week — see the
+          <a href="/calendar" className="text-accent mx-1 hover:underline">
+            calendar
+          </a>
+          for the full range.
         </p>
       ) : null}
     </Card>

@@ -37,6 +37,29 @@ export async function listQueue(
   });
 }
 
+/**
+ * Approved articles (have `scheduledAt`, not yet published). Backend sorts by
+ * `updatedAt: -1`; callers re-sort by `scheduledAt` for timeline use.
+ */
+export async function listScheduled(
+  fetcher: AuthedFetch,
+  query: Omit<QueueQuery, "status"> = {},
+): Promise<ApiResult<ArticleCardDTO[]>> {
+  return listQueue(fetcher, { ...query, status: "approved" });
+}
+
+/**
+ * Published articles in reverse-chrono order (per `updatedAt`). Use this for
+ * filling the calendar/schedule with already-out items. Caller filters by date
+ * window client-side.
+ */
+export async function listPublished(
+  fetcher: AuthedFetch,
+  query: Omit<QueueQuery, "status"> = {},
+): Promise<ApiResult<ArticleCardDTO[]>> {
+  return listQueue(fetcher, { ...query, status: "published" });
+}
+
 export async function getArticle(
   fetcher: AuthedFetch,
   id: string,
